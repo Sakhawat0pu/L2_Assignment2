@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, UpdateQuery, model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 import config from '../../config';
@@ -102,11 +102,36 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('findOneAndUpdate', async function (next) {
+  // ! to refer update is not null and UpdateQuery<TUser> asserts the type of update
+  const update = this.getUpdate()! as UpdateQuery<TUser>;
+  if (update.$set?.password) {
+    update.$set.password = await bcrypt.hash(
+      update.$set.password,
+      Number(config.bcrypt_salt_round),
+    );
+  }
+  next();
+});
 userSchema.set('toJSON', {
   transform: function (doc, ret) {
     delete ret.password;
+    delete ret._id;
+    delete ret.__v;
     return ret;
   },
+});
+
+userSchema.pre('find', function (next) {
+  this.find().projection({
+    _id: 0,
+    username: 1,
+    fullName: 1,
+    age: 1,
+    email: 1,
+    address: 1,
+  });
+  next();
 });
 
 userSchema.statics.getUser = async (userId: number) => {

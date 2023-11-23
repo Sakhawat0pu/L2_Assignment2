@@ -25,5 +25,6 @@ export type User = {
   isActive: boolean;
   hobbies: Array<string>;
   address: Address;
-  orders: Array<Order>;
+  orders?: Array<Order>;
+  isDeleted: boolean;
 };

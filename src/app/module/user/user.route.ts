@@ -9,7 +9,13 @@ router.get('/', userController.getUsers);
 
 router.get('/:userId', userController.getSingleUser);
 
+router.get('/:userId/orders', userController.getUserOrders);
+
+router.get('/:userId/orders/total-price', userController.getOrderTotalForAUser);
+
 router.put('/:userId', userController.updateUser);
+
+router.put('/:userId/orders', userController.updateUserOrder);
 
 router.delete('/:userId', userController.deleteUser);
 

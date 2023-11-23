@@ -70,7 +70,7 @@ const userSchema = new Schema<TUser, TUserModel>({
     trim: true,
     required: [true, 'A password is required.'],
   },
-  fullName: { type: nameSchema, required: true },
+  fullName: { type: nameSchema, required: true, noId: true },
   age: { type: Number, required: [true, 'Age is required.'] },
   email: {
     type: String,
@@ -86,10 +86,15 @@ const userSchema = new Schema<TUser, TUserModel>({
     required: [true, 'Please indicate if the user is active or inactive'],
   },
   hobbies: { type: [String], required: [true, 'Hobby is required'] },
-  address: { type: addressSchema, required: [true, 'Address is required.'] },
+  address: {
+    type: addressSchema,
+    noId: true,
+    required: [true, 'Address is required.'],
+  },
   orders: {
     type: [orderSchema],
-    required: [true, 'Orders field is required'],
+    noId: true,
+    default: undefined,
   },
 });
 
@@ -113,6 +118,7 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   }
   next();
 });
+
 userSchema.set('toJSON', {
   transform: function (doc, ret) {
     delete ret.password;
@@ -131,6 +137,11 @@ userSchema.pre('find', function (next) {
     email: 1,
     address: 1,
   });
+  next();
+});
+
+userSchema.pre('findOne', function (next) {
+  this.find().projection({ orders: 1 });
   next();
 });
 

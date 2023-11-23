@@ -4,54 +4,66 @@ import bcrypt from 'bcrypt';
 import config from '../../config';
 import { TAddress, TName, TOrder, TUser, TUserModel } from './user.interface';
 
-const nameSchema = new Schema<TName>({
-  firstName: {
-    type: String,
-    required: [true, 'First name is required.'],
-    trim: true,
-    validate: {
-      validator: (fName: string) => validator.isAlpha(fName),
-      message: '{VALUE} is not in valid format',
+const nameSchema = new Schema<TName>(
+  {
+    firstName: {
+      type: String,
+      required: [true, 'First name is required.'],
+      trim: true,
+      validate: {
+        validator: (fName: string) => validator.isAlpha(fName),
+        message: '{VALUE} is not in valid format',
+      },
+    },
+    lastName: {
+      type: String,
+      required: [true, 'Last name is required.'],
+      trim: true,
+      validate: {
+        validator: (lName: string) => validator.isAlpha(lName),
+        message: '{VALUE} is not in valid format',
+      },
     },
   },
-  lastName: {
-    type: String,
-    required: [true, 'Last name is required.'],
-    trim: true,
-    validate: {
-      validator: (lName: string) => validator.isAlpha(lName),
-      message: '{VALUE} is not in valid format',
+  { _id: true },
+);
+
+const addressSchema = new Schema<TAddress>(
+  {
+    street: {
+      type: String,
+      trim: true,
+      required: [true, 'Street name is required'],
+    },
+    city: {
+      type: String,
+      trim: true,
+      required: [true, 'City name is required'],
+    },
+    country: {
+      type: String,
+      trim: true,
+      required: [true, 'Street field is required'],
     },
   },
-});
+  { _id: true },
+);
 
-const addressSchema = new Schema<TAddress>({
-  street: {
-    type: String,
-    trim: true,
-    required: [true, 'Street name is required'],
+const orderSchema = new Schema<TOrder>(
+  {
+    productName: {
+      type: String,
+      trim: true,
+      required: [true, 'Product name is required.'],
+    },
+    price: { type: Number, required: [true, 'Product price is required.'] },
+    quantity: {
+      type: Number,
+      required: [true, 'Product quantity is required'],
+    },
   },
-  city: {
-    type: String,
-    trim: true,
-    required: [true, 'City name is required'],
-  },
-  country: {
-    type: String,
-    trim: true,
-    required: [true, 'Street field is required'],
-  },
-});
-
-const orderSchema = new Schema<TOrder>({
-  productName: {
-    type: String,
-    trim: true,
-    required: [true, 'Product name is required.'],
-  },
-  price: { type: Number, required: [true, 'Product price is required.'] },
-  quantity: { type: Number, required: [true, 'Product quantity is required'] },
-});
+  { _id: true },
+);
 
 const userSchema = new Schema<TUser, TUserModel>({
   userId: {
@@ -70,7 +82,7 @@ const userSchema = new Schema<TUser, TUserModel>({
     trim: true,
     required: [true, 'A password is required.'],
   },
-  fullName: { type: nameSchema, required: true, noId: true },
+  fullName: { type: nameSchema, required: true },
   age: { type: Number, required: [true, 'Age is required.'] },
   email: {
     type: String,
@@ -88,12 +100,10 @@ const userSchema = new Schema<TUser, TUserModel>({
   hobbies: { type: [String], required: [true, 'Hobby is required'] },
   address: {
     type: addressSchema,
-    noId: true,
     required: [true, 'Address is required.'],
   },
   orders: {
     type: [orderSchema],
-    noId: true,
     default: undefined,
   },
 });

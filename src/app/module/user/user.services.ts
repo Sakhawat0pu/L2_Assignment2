@@ -74,7 +74,7 @@ const getUserOrdersFromDb = async (userId: number) => {
   if (!user) {
     throw new Error('User not found');
   }
-  const orders = await userModel.findOne({ userId });
+  const orders = await userModel.findOne({ userId }, { orders: 1 });
   return orders;
 };
 

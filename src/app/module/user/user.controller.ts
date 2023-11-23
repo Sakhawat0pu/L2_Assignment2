@@ -44,7 +44,7 @@ const getSingleUser = async (req: Request, res: Response) => {
     const user = await userServices.getSingleUserFromDb(userId);
     res.status(200).json({
       success: true,
-      message: 'Users fetched successfully!',
+      message: 'User fetched successfully!',
       data: user,
     });
   } catch (err: any) {
@@ -188,6 +188,7 @@ const getUserOrders = async (req: Request, res: Response) => {
     }
   }
 };
+
 const getOrderTotalForAUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);

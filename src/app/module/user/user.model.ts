@@ -25,7 +25,7 @@ const nameSchema = new Schema<TName>(
       },
     },
   },
-  { _id: true },
+  { _id: false },
 );
 
 const addressSchema = new Schema<TAddress>(
@@ -46,7 +46,7 @@ const addressSchema = new Schema<TAddress>(
       required: [true, 'Street field is required'],
     },
   },
-  { _id: true },
+  { _id: false },
 );
 
 const orderSchema = new Schema<TOrder>(
@@ -62,7 +62,7 @@ const orderSchema = new Schema<TOrder>(
       required: [true, 'Product quantity is required'],
     },
   },
-  { _id: true },
+  { _id: false },
 );
 
 const userSchema = new Schema<TUser, TUserModel>({
@@ -147,11 +147,6 @@ userSchema.pre('find', function (next) {
     email: 1,
     address: 1,
   });
-  next();
-});
-
-userSchema.pre('findOne', function (next) {
-  this.find().projection({ orders: 1 });
   next();
 });
 

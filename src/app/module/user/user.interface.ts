@@ -1,30 +1,35 @@
-export type Name = {
+import { Model } from 'mongoose';
+
+export type TName = {
   firstName: string;
   lastName: string;
 };
 
-export type Address = {
+export type TAddress = {
   street: string;
   city: string;
   country: string;
 };
 
-export type Order = {
+export type TOrder = {
   productName: string;
   price: number;
   quantity: number;
 };
 
-export type User = {
+export type TUser = {
   userId: number;
   username: string;
   password: string;
-  fullName: Name;
+  fullName: TName;
   age: number;
   email: string;
   isActive: boolean;
   hobbies: Array<string>;
-  address: Address;
-  orders?: Array<Order>;
-  isDeleted: boolean;
+  address: TAddress;
+  orders: Array<TOrder>;
 };
+
+export interface TUserModel extends Model<TUser> {
+  getUser(userId: number): Promise<TUser | null>;
+}

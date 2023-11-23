@@ -1,8 +1,10 @@
 import { Schema, model } from 'mongoose';
 import validator from 'validator';
-import { Address, Name, Order, User } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
+import { TAddress, TName, TOrder, TUser, TUserModel } from './user.interface';
 
-const nameSchema = new Schema<Name>({
+const nameSchema = new Schema<TName>({
   firstName: {
     type: String,
     required: [true, 'First name is required.'],
@@ -23,7 +25,7 @@ const nameSchema = new Schema<Name>({
   },
 });
 
-const addressSchema = new Schema<Address>({
+const addressSchema = new Schema<TAddress>({
   street: {
     type: String,
     trim: true,
@@ -41,7 +43,7 @@ const addressSchema = new Schema<Address>({
   },
 });
 
-const orderSchema = new Schema<Order>({
+const orderSchema = new Schema<TOrder>({
   productName: {
     type: String,
     trim: true,
@@ -51,7 +53,7 @@ const orderSchema = new Schema<Order>({
   quantity: { type: Number, required: [true, 'Product quantity is required'] },
 });
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<TUser, TUserModel>({
   userId: {
     type: Number,
     unique: true,
@@ -85,6 +87,31 @@ const userSchema = new Schema<User>({
   },
   hobbies: { type: [String], required: [true, 'Hobby is required'] },
   address: { type: addressSchema, required: [true, 'Address is required.'] },
-  orders: { type: [orderSchema], default: [] },
-  isDeleted: { type: Boolean, default: false },
+  orders: {
+    type: [orderSchema],
+    required: [true, 'Orders field is required'],
+  },
 });
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_round),
+  );
+  next();
+});
+
+userSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    delete ret.password;
+    return ret;
+  },
+});
+
+userSchema.statics.getUser = async (userId: number) => {
+  return await userModel.findOne({ userId });
+};
+
+// model
+export const userModel = model<TUser, TUserModel>('Users', userSchema);

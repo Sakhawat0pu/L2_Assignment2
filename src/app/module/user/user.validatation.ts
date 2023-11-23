@@ -30,12 +30,7 @@ const userValidationSchema = z.object({
   }),
   hobbies: z.array(z.string()),
   address: addressValidationSchema.required(),
-  orders: z.array(orderValidationSchema).optional().default([]),
-  isDeleted: z
-    .boolean({
-      invalid_type_error: 'isDeleted must be a boolean',
-    })
-    .default(false),
+  orders: z.array(orderValidationSchema),
 });
 
 export default userValidationSchema;

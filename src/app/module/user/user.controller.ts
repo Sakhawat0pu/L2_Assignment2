@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.services';
-import userValidationSchema from './user.validatation';
+import userValidationSchema from './user.validation';
 
+// Controller function: Create a new user
 const createUser = async (req: Request, res: Response) => {
   try {
     const user = req.body;
-    const validatedUser = userValidationSchema.parse(user);
+    const validatedUser = userValidationSchema.parse(user); // User data validation
     const result = await userServices.createUserIntoDb(validatedUser);
     res.status(200).json({
       success: true,
@@ -21,6 +22,7 @@ const createUser = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Get all users
 const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userServices.getUsersFromDb();
@@ -38,6 +40,7 @@ const getUsers = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Get a single user by userId
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -67,6 +70,7 @@ const getSingleUser = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Update a user by userId
 const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -99,6 +103,7 @@ const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Delete a user by userId
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -128,6 +133,7 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Update orders for a specific user
 const updateUserOrder = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -160,6 +166,7 @@ const updateUserOrder = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Get orders for a specific user
 const getUserOrders = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
@@ -189,6 +196,7 @@ const getUserOrders = async (req: Request, res: Response) => {
   }
 };
 
+// Controller function: Get the total price of orders for a specific user
 const getOrderTotalForAUser = async (req: Request, res: Response) => {
   try {
     const userId = parseInt(req.params.userId);
